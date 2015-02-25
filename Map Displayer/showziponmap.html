@@ -1,0 +1,161 @@
+<!-- Made By Cory Ferrier in Notepad++ for PhocusDesigns -->
+<!DOCTYPE html>
+<html>
+	<head>
+	
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		
+		
+		<script src="http://maps.googleapis.com/maps/api/js?sensor=true" type="text/javascript"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+		<script type="text/javascript" src="https://raw.github.com/HPNeo/gmaps/master/gmaps.js"></script>
+		<link href='./mapfit.css' rel='stylesheet' type='text/css' />
+	
+			
+		
+		
+		<script type="text/javascript">
+			
+			
+			//Will hold a Multi-dimensional Array that holds the zipcodes, addresses, latitudes, and longitudes of the Database
+			var addresses;
+			
+			//Holds latitude and longitude. Used when centering the map and displaying markers.
+			var lng;
+			var lat;
+			
+			//Used to hold the address for the current marker being displayed
+			var address;
+		
+			var coordinates;
+			
+			//Will Hold the GMAPS variable(the map)
+			var map;
+			
+			//Will hold the length of the array
+			var length;
+		
+			//The geocoder used in centering the map on the zipcode
+			var geocoder = new google.maps.Geocoder();
+			
+			
+		//Runs as soon as the document loads	
+		$(document).ready(function(){
+		map = new GMaps({
+			div: '#map',
+			lat: -12.043333,
+			lng: -77.028333,
+			
+			//Change this to adjust the zoom level, I tried to make it large enough to coverage the area of a 
+			//average zipcode but was mostly guessing
+			zoom: 11
+		});
+		//Calls getarray(below)
+		getarray();
+		});
+		
+		//uses queryzip.php to get a multidimensional array containing 4 subarrays:
+		//lat,lng,zip, and address
+		//It then puts this multidimensional array in the addresses variable
+		function getarray(){
+			$.get("queryzip.php",
+				function(data){
+					addresses=jQuery.parseJSON(data);
+					});
+					}
+
+		
+		
+		//Called by Submit button on form
+		function validateform(form)
+			{
+				//gets zipcode from form
+				zip=form.Zip.value;
+				//makes sure what was entered is 5 digits(a zipcode)
+				if(zip=="")
+					alert("Invalid Zipcode!");
+				else{
+				//Gets the length of the array
+				length=addresses['lng'].length;
+				
+				//calls the function to add markers to the map
+				addtomap(zip);
+				
+				}
+				
+			}
+			
+			
+		//called by validateform	
+		function addtomap(zip)
+		{
+			
+			//Gets the lat and lng of the zip, then centers the map on that
+			geocoder.geocode({'address': zip}, function(result, status){
+				if (status == google.maps.GeocoderStatus.OK)
+				{
+					var latlng = result[0].geometry.location;
+					lat= result[0].geometry.location.lat();
+					lng= result[0].geometry.location.lng();
+					map.setCenter(lat,lng);
+				}
+				else 
+				{
+				//Change this to change what pops up when a "bad" non-null address is entered(or the geocoder fails
+				alert(status);
+				}
+				});
+				
+		
+				
+	//Cycles through the entries in the multi-dimensional array		
+			for(var i=0;i<length;i++)
+			{
+				var lat=addresses['lat'][i];
+				var lng=addresses['lng'][i];
+				var address=addresses['address'][i];
+					
+					map.addMarker({
+						lat: lat,
+						lng: lng,
+						title: 'Hofmann Hotdogs',
+						infoWindow: {
+							//You can insert any amount of HTML after "content:" If you want to make this
+							//window look better.
+							 content: "Hofmann Hotdogs: <br />" + address
+						}
+					});
+				
+
+
+				//}
+					
+			}
+		}
+	
+				
+			
+			
+			
+
+			
+			
+		
+		</script>
+	</head>
+	
+		<body>	
+		
+		
+		<!--Form to get the Zip code-->
+		<form name="getinfo" action="" METHOD="GET"> Enter the Zip Code to show on the map below <BR /> <BR />
+		Zip: <BR /> <input type="text" name="Zip" /><br />
+		<INPUT TYPE="button" NAME="button" value="Submit" onClick="validateform(this.form)">
+         
+		 
+		 <!--Wherever this is, is where the map will be-->
+		 <div id="map"></div>
+   
+	
+		</body>
+	</html>

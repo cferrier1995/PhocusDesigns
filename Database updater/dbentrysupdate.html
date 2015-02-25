@@ -1,0 +1,105 @@
+<!-- Made By Cory Ferrier in Notepad++ for PhocusDesigns -->
+<!-- This allowed someone to easily add a new store address to the database with a GUI interface. -->
+<!-- It also fetched the coordinates for the entered address and added that to the database-->
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="dbentryupdate" content="initial-scale=1.0, user-scalable=no" />
+		
+		<!-- sends key to google maps api for permission-->
+		<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=[REDACTED]" type="text/javascript"></script>
+		<script language="javascript" src="js/jquery.js"></script>
+		<script language="javascript" src="UpdateDBEntry.js"></script>
+		
+		<!-- Mega Script containing all needed functions + declarations-->
+		<script type="text/javascript">
+			
+			//Variable declarations
+			var arraylength;
+			var coordinates;
+			var geocoder = new GClientGeocoder();
+			var coor;
+			var lat;
+			var lng;
+			var address;
+			var street;
+			var city;
+			var state;
+			var zip;
+			var storeid;
+			var storetype;
+		
+			//Gets the address as input from the user and then passes to fetchlatlang
+			function validateform(form)
+			{
+				street=form.Street.value;
+				city=form.City.value;
+				state=form.State.value;
+				zip=form.Zip.value;
+				storeid=form.store_id.value;
+				storetype=form.store_type.value;
+			
+				//Validate Input
+				if (street=="" || city=="" || state=="" || zip=="" || storeid=="" || storetype=="")
+				{
+					alert("You didn't enter something for one of the values, please try again");
+				}
+				else
+				{
+					address=(street + " " + city + " " + state + " " + zip);
+					var confirmInput=confirm("The database will be updated with: \n The address: "+ address + "\n The Store ID: " + storeid + "\n And The Store Type: " + storetype + "\n Press OK to Confirm or Cancel to re-enter values");
+					if (confirmInput==true)
+					{
+						alert("Updating the database!");
+						fetchlatlng(address);
+					}
+					else
+					{
+					alert("Okay, please enter the correct info then re-submit");
+					}
+				}
+			}
+			
+			//gets the coordinates for the given address, calls reformatcoor to turn it into two strings(lat and long) and send them to the DB 
+			function fetchlatlng(address)
+			{
+				geocoder.getLatLng(address, function(coor){reformatcoor(coor);})	
+			}
+							
+							
+				
+			
+		
+			//Gets latlng variable(coor) from fetchlatlng, turns it into two strings(lat and lng) without unneeded characters so the DB can use it properly, then sends the formated variables to updatedb-->
+			 function reformatcoor(coor)
+			 {
+				coordinates=coor.toString();
+				var comma=coordinates.search(",");
+				var slength=coordinates.length;
+				lat=coordinates.substring(1,comma);
+				lng=coordinates.substring(comma+1,slength-1);
+				updatedb(lat,lng,street,city,state,zip,storeid,storetype);
+			}
+			
+			
+		
+			
+
+		
+
+		</script>									
+	</head>	
+		
+		<!--Button Calls the getarray method, which launches into the main loop -->
+		<body>	
+		<form name="getinfo" action="" METHOD="GET"> Enter the values to be used in updating the database <BR /> <BR />
+		Street: <BR /> <input type="text" name="Street" /><br />
+		City: <BR /> <input type="text" name="City" /><br />
+		State: <BR /> <input type="text" name="State" /><br />
+		Zip: <BR /> <input type="text" name="Zip" /><br />
+		Store ID: <BR /> <input type="text" name="store_id" /><br />
+		Store Type: <BR /> <input type="text" name="store_type" /><br />
+		<INPUT TYPE="button" NAME="button" value="Submit" onClick="validateform(this.form)">
+		</body>
+	</html>
+											

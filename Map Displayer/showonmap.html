@@ -1,0 +1,74 @@
+<!-- Made By Cory Ferrier in Notepad++ for PhocusDesigns -->
+<!DOCTYPE html>
+<html>
+	<head>
+	
+		
+		<!-- sends key to google maps api for permission-->
+		<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCQq-qKpPm2-XgKnz7cfYN8UCk6wxwNJrM&sensor=true" type="text/javascript"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+		<script type="text/javascript" src="https://raw.github.com/HPNeo/gmaps/master/gmaps.js"></script>
+		<link href='./mapfit.css' rel='stylesheet' type='text/css' />
+		<!-- Mega Script containing all needed functions + declarations-->
+		<script type="text/javascript">
+			var zip="21144";
+			var lng;
+			var lat;
+			var coor;
+			var coordinates;
+			var map;
+			var geocoder = new google.maps.Geocoder();
+			
+
+			
+		$(document).ready(function(){
+		map = new GMaps({
+			div: '#map',
+			lat: -12.043333,
+			lng: -77.028333
+		});
+			
+			
+			geocoder.geocode({'address': zip}, function(result, status){
+				if (status == google.maps.GeocoderStatus.OK)
+				{
+				
+					var latlng = result[0].geometry.location;
+					lat= result[0].geometry.location.lat();
+					lng= result[0].geometry.location.lng();
+					map.setCenter(lat,lng);
+					map.addMarker({
+					lat: lat,
+					lng: lng
+					});
+					
+					
+					
+				}
+				else 
+				{
+					alert(status);
+				}
+			});
+				
+		});		
+				
+			
+			
+			
+
+			
+			
+		
+		</script>
+	</head>
+	
+		<body>	
+		
+    
+          <div id="map"></div>
+   
+	
+		</body>
+	</html>
+				

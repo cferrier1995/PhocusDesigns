@@ -1,0 +1,93 @@
+<!-- Made By Cory Ferrier in Notepad++ for PhocusDesigns -->
+<!-- Fetched a list of addresses from the database and used the google maps API to get their coordinates -->
+<!-- Then pushed them back to the database with the coordinate values -->
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta name="dbcoordinatesupdate" content="initial-scale=1.0, user-scalable=no" />
+		
+		<!-- sends key to google maps api for permission-->
+		<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=[REDACTED]" type="text/javascript"></script>
+		<script language="javascript" src="js/jquery.js"></script>
+		<script language="javascript" src="UpdateDBCoordinates.js"></script>
+		
+		<!--Script containing all needed functions + declarations-->
+		<script type="text/javascript">
+			
+			//Various declarations
+			var arraylength;
+			var coordinates;
+			var geocoder = new GClientGeocoder();
+			var coor;
+			var lat;
+			var lng;
+			var id = '1';
+			var address
+		
+			//Executed by button, calls addresses.php and gets an array of addresses from it
+			function getarray()
+			{
+				
+				$.post("addresses.php", function(data){addresses=jQuery.parseJSON(data);})
+					id=0;
+					arraylength=(addresses.length)-1;
+					//There needs to be about a 1 second pause between calls so google maps API dosen't reject the calls
+					alert("It will take about " + arraylength + " seconds to update the database, keep this window open until then");
+					//calls the main loop 
+					loopandupdate();
+			}
+				
+				
+				//Goes through the arrays and updates each database entry with the latitude and longitude
+				function loopundupdate()
+				{
+					document.getElementById("p1").innerHTML=("Done: " + id +"/" + arraylength);
+					id=id+1;
+					if (id>arraylength)
+					{
+						alert("Done updating the database!");
+					}
+					else
+					{
+						//small delay so the google maps API dosen't reject the calls
+						setTimeout(function() {fetchlatlng(addresses[id]);},1000);
+					}
+				}
+				
+				//gets the coordinates of the given address
+				function fetchlatlng(address)
+				{
+					geocoder.getLatLng(address, function(coor){reformatcoor(coor);})
+				}
+							
+							
+				
+			
+		
+			//Gets latlng variable(coor) from fetchlatlng, turns it into two strings(lat and lng) without unneeded charecters so the DB can use it properly, then sends the formated variables to updatedb-->
+			 function reformatcoor(coor)
+			 {
+				coordinates=coor.toString();
+				var comma=coordinates.search(",");
+				var slength=coordinates.length;
+				lat=coordinates.substring(1,comma);
+				lng=coordinates.substring(comma+1,slength-1);
+				updatedb(lat,lng,id);
+			}
+			
+			
+		
+			
+
+		
+
+		</script>									
+	</head>	
+		
+		<!--Button Calls the getarray method, which launches into the mega loop -->
+		<body>	
+		<input type="button" onclick="getarray()" value="Press to update the Database" />
+		<p id="p1"></p>
+		</body>
+	</html>
+											
