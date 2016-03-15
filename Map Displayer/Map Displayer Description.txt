@@ -1,3 +1,0 @@
-After populating the hoffman hotdogs SQL database, I now made a webpage that would query it with a given zipcode and display all the addresses(Hoffman Hotdogs store locations) within a certain radius of that zipcode on a google maps display using the google maps API.  
-
-You'll notice the way I call the google maps API is a little different here, that's because a long time after the internship I wanted to try and get this working again for curiosities sake and that involved updating the way I called the google maps API. I eventually gave up though after realizing that it was entirely pointless because Hoffman Hotdogs no longer used that database. 
