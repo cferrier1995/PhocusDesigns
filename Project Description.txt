@@ -1,6 +1,0 @@
-The internship I did for phocusdesigns consisted entirely of doing some backend work for one of their clients: Hoffman Hotdogs. 
-The first part(Database Updater) consisted of using the google maps API to populate a database of hoffmann hotdog store addresses with their coordinates, and adding a page where new addresses could be added with their coordinates.
-The second part(Map Displayer) involved using the coordinates that had now been added to the database to create a google maps display with hoffman dogs store locations, all of them and only those within a certain radius of a zip code.
-
-NOTE: All of the code included no longer works, because it appears the hoffman hotdogs database is now very different, the google maps API has changed significantly, and some values have been redacted for security reasons. 
-NOTE 2: On this project, I essentially had to teach myself everything used here. I came in with no knowledge of PHP, HTML, mySQL, or Javascript.   
